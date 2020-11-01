@@ -4,9 +4,11 @@ from urllib.request import urlopen
 from urllib.parse import urljoin
 
 from ga_rss.generators import royalroad
+from ga_rss.generators import aoa
 
 GENERATORS = {
-    'royalroad': royalroad
+    'royalroad': royalroad,
+    'aoa': aoa
 }
 
 def generate_feed(config_path: str):
