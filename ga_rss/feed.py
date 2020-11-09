@@ -5,10 +5,12 @@ from urllib.parse import urljoin
 
 from ga_rss.generators import royalroad
 from ga_rss.generators import aoa
+from ga_rss.generators import ffnet
 
 GENERATORS = {
     'royalroad': royalroad,
-    'aoa': aoa
+    'aoa': aoa,
+    'ffnet': ffnet
 }
 
 def generate_feed(config_path: str):
