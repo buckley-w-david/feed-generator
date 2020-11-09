@@ -4,10 +4,10 @@
 #
 #    pip-compile
 #
-beautifulsoup4==4.9.3     # via ga_rss (setup.py)
-feedgen==0.9.0            # via ga_rss (setup.py)
-lxml==4.6.1               # via feedgen
+beautifulsoup4==4.9.3     # via feed_generator (setup.py)
+feedgen==0.9.0            # via feed_generator (setup.py)
+lxml==4.6.1               # via feed_generator (setup.py), feedgen
 python-dateutil==2.8.1    # via feedgen
 six==1.15.0               # via python-dateutil
 soupsieve==2.0.1          # via beautifulsoup4
-toml==0.10.1              # via ga_rss (setup.py)
+toml==0.10.1              # via feed_generator (setup.py)
