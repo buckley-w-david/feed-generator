@@ -10,6 +10,12 @@ setup(
         'beautifulsoup4',
         'toml',
         'feedgen',
-        'lxml'
-    ]
+        'lxml',
+        'typer',
+    ],
+    entry_points = {
+        'console_scripts': [
+            'feed-generator=feed_generator.feed:app'
+        ]
+    }
 )
