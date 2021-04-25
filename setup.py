@@ -12,6 +12,8 @@ setup(
         'feedgen',
         'lxml',
         'typer',
+        'fanficfare',
+        'pydantic'
     ],
     entry_points = {
         'console_scripts': [
