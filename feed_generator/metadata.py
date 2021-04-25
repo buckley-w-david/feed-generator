@@ -6,7 +6,6 @@ def fetch_metadata(url: str) -> bytes:
     configuration = Configuration(adapters.getConfigSectionsFor(url), 'epub')
     adapter = adapters.getAdapter(configuration, url)
     metadata = adapter.getStoryMetadataOnly().getAllMetadata()
-    breakpoint()
 
     return metadata
 

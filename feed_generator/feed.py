@@ -26,10 +26,15 @@ def generate_feed():
 
 @app.command()
 def add(url: str):
-    config = toml.load(config_path)
+    config_path = os.environ.get('FEED_GENERATOR_CONFIG', 'config.toml')
+
+    with open(config_path, 'r') as f:
+        config = toml.load(f)
+
     metadata = fetch_metadata(url)
     name = metadata["title"]
 
-    config["Feeds"].append({"url": url, "name": name})
+    config["feeds"].append({"url": url, "name": name})
+
     with open(config_path, 'w') as f:
         toml.dump(config, f)
