@@ -20,9 +20,12 @@ def generate_feed():
     base.mkdir(parents=True, exist_ok=True)
 
     for feed_config in settings.feeds:
-        generator = generators.from_url(feed_config.url)
-        feed = generator.generate_feed(feed_config)
-        feed.rss_file(f"{settings.base_dir}/{feed_config.name}.xml")
+        try:
+            generator = generators.from_url(feed_config.url)
+            feed = generator.generate_feed(feed_config)
+            feed.rss_file(f"{settings.base_dir}/{feed_config.name}.xml")
+        except Exception as e:
+            print(feed_config, e)
 
 @app.command()
 def add(url: str):

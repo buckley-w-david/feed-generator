@@ -9,7 +9,7 @@ from feedgen.feed import FeedGenerator
 
 from feed_generator.config import FeedModel
 
-UA = 'Mozilla/5.0 (X11; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0'
+UA = 'Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101 Firefox/85.0'
 
 def generate_feed(feed_config: FeedModel):
     rss_feed = FeedGenerator()
