@@ -6,7 +6,8 @@ from pydantic import (
     BaseSettings,
     BaseModel,
     HttpUrl,
-    DirectoryPath
+    DirectoryPath,
+    FilePath
 )
 
 def toml_config_settings_source(settings: BaseSettings) -> Dict[str, Any]:
@@ -22,7 +23,7 @@ class FeedModel(BaseModel):
 
 class Settings(BaseSettings):
     base_dir: DirectoryPath
-    feeds: List[FeedModel]
+    urls: FilePath
 
     class Config:
         env_prefix = 'FEED_GENERATOR_'

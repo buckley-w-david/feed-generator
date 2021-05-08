@@ -6,8 +6,9 @@ from urllib.request import urlopen
 from urllib.parse import urljoin
 
 import typer
+from pydantic import HttpUrl, BaseModel
 
-from feed_generator.config import Settings
+from feed_generator.config import Settings, FeedModel
 from feed_generator import generators
 from feed_generator.metadata import fetch_metadata
 
@@ -19,25 +20,33 @@ def generate_feed():
     base = Path(str(settings.base_dir))
     base.mkdir(parents=True, exist_ok=True)
 
-    for feed_config in settings.feeds:
+    # TODO find a better way to go from str -> HttpUrl
+    class MyModel(BaseModel):
+        url: HttpUrl
+
+    with open(settings.urls, 'r') as f:
+        serial_urls = [MyModel(url=url.strip()) for url in f.readlines()]
+
+    for url_model in serial_urls:
         try:
-            generator = generators.from_url(feed_config.url)
+            metadata = fetch_metadata(url_model.url)
+            name = metadata["title"]
+
+            generator = generators.from_url(url_model.url)
+
+            feed_config = FeedModel(url=url_model.url, name=name)
             feed = generator.generate_feed(feed_config)
             feed.rss_file(f"{settings.base_dir}/{feed_config.name}.xml")
         except Exception as e:
-            print(feed_config, e)
+            print(url, e)
 
 @app.command()
 def add(url: str):
-    config_path = os.environ.get('FEED_GENERATOR_CONFIG', 'config.toml')
+    settings = Settings()
+    with open(settings.urls, 'r') as f:
+        serial_urls = [url.strip() for url in f.readlines()]
 
-    with open(config_path, 'r') as f:
-        config = toml.load(f)
+    serial_urls.append(url)
 
-    metadata = fetch_metadata(url)
-    name = metadata["title"]
-
-    config["feeds"].append({"url": url, "name": name})
-
-    with open(config_path, 'w') as f:
-        toml.dump(config, f)
+    with open(settings.urls, 'w') as f:
+        f.write('\n'.join(serial_urls))
