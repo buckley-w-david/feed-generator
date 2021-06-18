@@ -8,31 +8,29 @@ from bs4 import BeautifulSoup
 from feedgen.feed import FeedGenerator
 
 from feed_generator.config import FeedModel
-
-UA = 'Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101 Firefox/85.0'
+from feed_generator.metadata import fetch_metadata
 
 def generate_feed(feed_config: FeedModel):
     rss_feed = FeedGenerator()
     rss_feed.id(feed_config.url)
     rss_feed.title(feed_config.name)
 
-    req = Request(feed_config.url, data=None, headers={'User-Agent': UA})
-    with urlopen(req) as request:
-        soup = BeautifulSoup(request.read(), features="lxml")
+    metadata = fetch_metadata(feed_config.url)
 
     rss_feed.author({
-        'name':  soup.find(id='profile_top').find('a').text,
-        'email': 'test@example.com'
+        'name': metadata['author'],
+        'email': f"{metadata['author']}@{feed_config.url.host}"
     })
-    rss_feed.description(soup.find(id='profile_top').find('div', {"class": "xcontrast_txt"}).text)
+    rss_feed.description(metadata['description'])
     rss_feed.link( href=feed_config.url, rel='alternate' )
+    rss_feed.logo(metadata['cover_image'])
     rss_feed.language('en')
 
-    for chapter in soup.find(id='chap_select').find_all('option'):
+    for i, chapter in metadata['zchapters']:
         feed_entry = rss_feed.add_entry()
-        link = urljoin(feed_config.url, chapter['value'])
-        time = datetime.utcnow().replace(tzinfo=timezone.utc) #FIXME
-        title = chapter.text
+        link = chapter['url']
+        time = datetime.strptime(metadata['dateUpdated'], '%Y-%m-%d').replace(tzinfo=timezone.utc)
+        title = chapter['title']
 
         feed_entry.id(link)
         feed_entry.title(title)

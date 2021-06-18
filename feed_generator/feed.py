@@ -58,3 +58,12 @@ def add(url: str):
 
     with open(settings.urls, 'w') as f:
         f.write('\n'.join(serial_urls))
+
+@app.command()
+def metadata(url: str):
+    # TODO find a better way to go from str -> HttpUrl
+    class MyModel(BaseModel):
+        url: HttpUrl
+
+    metadata = fetch_metadata(MyModel(url=url).url)
+    print(metadata)
